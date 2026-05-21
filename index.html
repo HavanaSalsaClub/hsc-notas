@@ -263,6 +263,28 @@ select option{background:#1a1a1a;}
 
 footer{margin-top:2.5rem;font-size:.72rem;color:rgba(250,243,224,.18);text-align:center;letter-spacing:.07em;}
 
+.resumen-box{
+  background:rgba(212,175,55,.06);
+  border:1px solid rgba(212,175,55,.25);
+  border-radius:14px;
+  padding:1.2rem 1.5rem;
+  margin-bottom:.85rem;
+}
+.resumen-title{
+  font-size:.72rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--dorado);
+  margin-bottom:.9rem;
+}
+.resumen-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.42rem 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:.88rem;
+}
+.resumen-row:last-child{border-bottom:none;}
+.res-fase{color:rgba(250,243,224,.7);}
+.res-pts{color:var(--crema);font-weight:600;font-family:'Playfair Display',serif;font-size:.95rem;}
+
 @keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
 @keyframes fadeUp  {from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none}}
 @keyframes spin    {to{transform:rotate(360deg)}}
@@ -356,6 +378,12 @@ window.onload = () => {
     const o = document.createElement("option");
     o.value = g.id; o.textContent = g.nombre; s.appendChild(o);
   });
+  // Enter key triggers consultar
+  document.addEventListener("keydown", e => {
+    if(e.key === "Enter" && document.getElementById("login-card").style.display !== "none"){
+      consultar();
+    }
+  });
 };
 
 function showErr(msg){ const e=document.getElementById("err-box"); e.textContent=msg; e.style.display="block"; }
@@ -386,11 +414,23 @@ function v(row,col){ return (row[col]||"").trim(); }
 function n(row,col){ return parseFloat(v(row,col))||0; }
 
 function formatFecha(raw){
-  // Excel serial date → JS Date
+  if(!raw) return "";
+  // Si viene como DD/MM/YYYY (formato Google Sheets)
+  const partes = raw.trim().split("/");
+  if(partes.length === 3){
+    const dia  = parseInt(partes[0]);
+    const mes  = parseInt(partes[1]) - 1;
+    const anio = parseInt(partes[2]);
+    const d = new Date(anio, mes, dia);
+    return d.toLocaleDateString("es-VE",{year:"numeric",month:"long",day:"numeric"});
+  }
+  // Si viene como número serial de Excel (fallback)
   const serial = parseFloat(raw);
-  if(!serial) return raw;
-  const d = new Date((serial - 25569)*86400*1000);
-  return d.toLocaleDateString("es-VE",{year:"numeric",month:"long",day:"numeric"});
+  if(serial > 1000){
+    const d = new Date((serial - 25569)*86400*1000);
+    return d.toLocaleDateString("es-VE",{year:"numeric",month:"long",day:"numeric"});
+  }
+  return raw;
 }
 
 function tagTiempo(errores){
@@ -525,7 +565,7 @@ function mostrarResultado(r, g){
     f1body += `<div class="row" style="flex-direction:column;gap:.4rem;">
       <div style="display:flex;justify-content:space-between;">
         <span class="rl">Pasos regulares</span>
-        <span class="rv">${totReg} paso${totReg>1?"s":""} <span class="tag t-regular">−${(totReg*0.5).toFixed(1)} pts</span></span>
+        <span class="rv" style="display:flex;align-items:center;gap:.6rem;">${totReg} paso${totReg>1?"s":""} <span class="tag t-regular">−${(totReg*0.5).toFixed(1)} pts</span></span>
       </div>
       <div class="badges">${badges}</div>
     </div>`;
@@ -540,7 +580,7 @@ function mostrarResultado(r, g){
     f1body += `<div class="row" style="flex-direction:column;gap:.4rem;">
       <div style="display:flex;justify-content:space-between;">
         <span class="rl">Pasos malos</span>
-        <span class="rv">${totMal} paso${totMal>1?"s":""} <span class="tag t-mal">−${totMal} pts</span></span>
+        <span class="rv" style="display:flex;align-items:center;gap:.6rem;">${totMal} paso${totMal>1?"s":""} <span class="tag t-mal">−${totMal} pts</span></span>
       </div>
       <div class="badges">${badges}</div>
     </div>`;
@@ -549,10 +589,15 @@ function mostrarResultado(r, g){
       <span class="rv"><span class="tag t-bien">Ninguno</span></span></div>`;
   }
 
+  // Sin errores graves considerables
+  if(totReg===0 && totMal===0){
+    f1body += `<div class="row"><span class="rl" style="color:rgba(250,243,224,.8);font-style:italic;">✨ Sin errores graves considerables</span></div>`;
+  }
+
   html += `<div class="fase">
     <div class="fase-head">
       <h3>🕺 Fase Individual</h3>
-      <span class="fase-score">${totF1.toFixed(1)} / 14 pts</span>
+      <span class="fase-score">${Number.isInteger(totF1) ? totF1 : totF1.toFixed(2).replace(/\.?0+$/,"")} / 14 puntos</span>
     </div>
     <div class="fase-body">${f1body}</div>
   </div>`;
@@ -571,7 +616,7 @@ function mostrarResultado(r, g){
   html += `<div class="fase">
     <div class="fase-head">
       <h3>🎵 Fase Musical</h3>
-      <span class="fase-score">${buenas} / 3 pts</span>
+      <span class="fase-score">${buenas} / 3 puntos</span>
     </div>
     <div class="fase-body">${f2body}</div>
   </div>`;
@@ -586,7 +631,7 @@ function mostrarResultado(r, g){
     html += `<div class="fase">
       <div class="fase-head">
         <h3>💃 Fase Social</h3>
-        <span class="fase-score">${totInd} / 20 pts</span>
+        <span class="fase-score">${f3total} pts</span>
       </div>
       <div class="fase-body">${f3body}</div>
     </div>`;
@@ -598,8 +643,9 @@ function mostrarResultado(r, g){
     if(tRuedaTxt) f4body+=`<div class="row"><span class="rl">Tiempo</span><span class="rv">${tagGral(tRuedaTxt)}</span></div>`;
     if(pvdTxt)    f4body+=`<div class="row"><span class="rl">Proyección y dominio</span><span class="rv">${tagGral(pvdTxt)}</span></div>`;
     if(senasTxt)  f4body+=`<div class="row"><span class="rl">Señas</span><span class="rv">${tagGral(senasTxt)}</span></div>`;
-    if(guia)      f4body+=`<div class="row" style="flex-direction:column;gap:.35rem;"><span class="rl">Pasos con guía a mejorar</span><div class="badges">${guia.split(",").map(p=>`<span class="badge badge-malo">${p.trim()}</span>`).join("")}</div></div>`;
-    if(parti)     f4body+=`<div class="row" style="flex-direction:column;gap:.35rem;"><span class="rl">Pasos como participante a mejorar</span><div class="badges">${parti.split(",").map(p=>`<span class="badge badge-malo">${p.trim()}</span>`).join("")}</div></div>`;
+    if(guia)      f4body+=`<div class="row" style="flex-direction:column;gap:.35rem;"><span class="rl">Pasos como guía</span><div class="badges">${guia.split(",").map(p=>`<span class="badge badge-malo">${p.trim()}</span>`).join("")}</div></div>`;
+    if(parti)     f4body+=`<div class="row" style="flex-direction:column;gap:.35rem;"><span class="rl">Pasos como participante</span><div class="badges">${parti.split(",").map(p=>`<span class="badge badge-malo">${p.trim()}</span>`).join("")}</div></div>`;
+    if(!guia && !parti) f4body+=`<div class="row"><span class="rl" style="color:rgba(250,243,224,.8);font-style:italic;">✨ Sin errores graves considerables</span></div>`;
 
     html += `<div class="fase">
       <div class="fase-head">
@@ -610,12 +656,26 @@ function mostrarResultado(r, g){
     </div>`;
   }
 
+  // ─ CUADRO RESUMEN ─
+  function fmt(num){ return Number.isInteger(num) ? num.toString() : num.toFixed(2).replace(/\.?0+$/,""); }
+  let resumenRows = "";
+  resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Individual</span><span class="res-pts">${fmt(totF1)} puntos</span></div>`;
+  resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Musical</span><span class="res-pts">${fmt(buenas)} puntos</span></div>`;
+  if(f3body) resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Social</span><span class="res-pts">${fmt(f3total)} puntos</span></div>`;
+  if(tRueda>0) resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Grupal – Rueda</span><span class="res-pts">${fmt(tRueda)} puntos</span></div>`;
+  if(asistencia>0) resumenRows += `<div class="resumen-row"><span class="res-fase">Asistencia y Puntualidad</span><span class="res-pts">${fmt(asistencia)} puntos</span></div>`;
+
+  html += `<div class="resumen-box">
+    <div class="resumen-title">📊 Resumen de Puntuación</div>
+    ${resumenRows}
+  </div>`;
+
   // ─ ASISTENCIA ─
   if(asistencia>0){
     html += `<div class="fase">
       <div class="fase-head">
         <h3>📅 Asistencia y Puntualidad</h3>
-        <span class="fase-score">${asistencia} pts</span>
+        <span class="fase-score">${asistencia} puntos</span>
       </div>
     </div>`;
   }
@@ -626,7 +686,7 @@ function mostrarResultado(r, g){
       <div class="tl">Nota Final</div>
       <div style="font-size:.75rem;color:rgba(250,243,224,.4);margin-top:.2rem;">Mínimo para aprobar: ${CFG.minAprobado} pts</div>
     </div>
-    <div class="tn">${notaFinal.toFixed(1)}</div>
+    <div class="tn">${Number.isInteger(notaFinal) ? notaFinal : notaFinal.toFixed(2).replace(/\.?0+$/,"")}</div>
   </div>`;
 
   // ─ BANNER RESULTADO ─
