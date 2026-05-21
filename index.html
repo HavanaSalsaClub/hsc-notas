@@ -411,7 +411,7 @@ function splitCSVLine(line){
 }
 
 function v(row,col){ return (row[col]||"").trim(); }
-function n(row,col){ return parseFloat(v(row,col))||0; }
+function n(row,col){ return parseFloat((v(row,col)||'0').replace(',','.'))||0; }
 
 function formatFecha(raw){
   if(!raw) return "";
@@ -565,7 +565,7 @@ function mostrarResultado(r, g){
     f1body += `<div class="row" style="flex-direction:column;gap:.4rem;">
       <div style="display:flex;justify-content:space-between;">
         <span class="rl">Pasos regulares</span>
-        <span class="rv" style="display:flex;align-items:center;gap:.6rem;">${totReg} paso${totReg>1?"s":""} <span class="tag t-regular">−${(totReg*0.5).toFixed(1)} pts</span></span>
+        <span class="rv" style="display:flex;align-items:center;gap:.6rem;margin-left:1.2rem;">${totReg} paso${totReg>1?"s":""} <span class="tag t-regular">−${(totReg*0.5).toFixed(1)} pts</span></span>
       </div>
       <div class="badges">${badges}</div>
     </div>`;
@@ -580,7 +580,7 @@ function mostrarResultado(r, g){
     f1body += `<div class="row" style="flex-direction:column;gap:.4rem;">
       <div style="display:flex;justify-content:space-between;">
         <span class="rl">Pasos malos</span>
-        <span class="rv" style="display:flex;align-items:center;gap:.6rem;">${totMal} paso${totMal>1?"s":""} <span class="tag t-mal">−${totMal} pts</span></span>
+        <span class="rv" style="display:flex;align-items:center;gap:.6rem;margin-left:1.2rem;">${totMal} paso${totMal>1?"s":""} <span class="tag t-mal">−${totMal} pts</span></span>
       </div>
       <div class="badges">${badges}</div>
     </div>`;
@@ -656,8 +656,18 @@ function mostrarResultado(r, g){
     </div>`;
   }
 
+  // ─ ASISTENCIA ─
+  if(asistencia>0){
+    html += `<div class="fase">
+      <div class="fase-head">
+        <h3>📅 Asistencia y Puntualidad</h3>
+        <span class="fase-score">${asistencia} puntos</span>
+      </div>
+    </div>`;
+  }
+
   // ─ CUADRO RESUMEN ─
-  function fmt(num){ return Number.isInteger(num) ? num.toString() : num.toFixed(2).replace(/\.?0+$/,""); }
+  function fmt(num){ return Number.isInteger(num) ? num.toString() : parseFloat(num.toFixed(2)).toString(); }
   let resumenRows = "";
   resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Individual</span><span class="res-pts">${fmt(totF1)} puntos</span></div>`;
   resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Musical</span><span class="res-pts">${fmt(buenas)} puntos</span></div>`;
@@ -669,16 +679,6 @@ function mostrarResultado(r, g){
     <div class="resumen-title">📊 Resumen de Puntuación</div>
     ${resumenRows}
   </div>`;
-
-  // ─ ASISTENCIA ─
-  if(asistencia>0){
-    html += `<div class="fase">
-      <div class="fase-head">
-        <h3>📅 Asistencia y Puntualidad</h3>
-        <span class="fase-score">${asistencia} puntos</span>
-      </div>
-    </div>`;
-  }
 
   // ─ TOTAL FINAL ─
   html += `<div class="total-box">
