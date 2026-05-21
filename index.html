@@ -527,8 +527,12 @@ function mostrarResultado(r, g){
   const tRuedaTxt = v(r,"tiempo_rueda");
   const pvdTxt    = v(r,"pv_d_rueda");
   const senasTxt  = v(r,"senas_rueda");
-  const guia      = v(r,"guia_rueda").replace(/^[0.,\s]*$/,"").trim();
-  const parti     = v(r,"participante_rueda").replace(/^[0.,\s]*$/,"").trim();
+  const guiaRaw   = v(r,"guia_rueda").trim();
+  const partiRaw  = v(r,"participante_rueda").trim();
+  const guia      = guiaRaw.replace(/^[0.,\s]*$/,"").trim();
+  const parti     = partiRaw.replace(/^[0.,\s]*$/,"").trim();
+  const guiaEsCero  = /^[0.,\s]+$/.test(guiaRaw) && guiaRaw !== "";
+  const partiEsCero = /^[0.,\s]+$/.test(partiRaw) && partiRaw !== "";
 
   // Totales
   const totGral  = n(r,"total_general");
@@ -589,10 +593,7 @@ function mostrarResultado(r, g){
       <span class="rv"><span style="color:rgba(250,243,224,.7);font-style:italic;">✨ Sin errores graves considerables</span></span></div>`;
   }
 
-  // Sin errores graves considerables
-  if(totReg===0 && totMal===0){
-    f1body += `<div class="row"><span class="rl" style="color:rgba(250,243,224,.8);font-style:italic;">✨ Sin errores graves considerables</span></div>`;
-  }
+
 
   html += `<div class="fase">
     <div class="fase-head">
@@ -643,9 +644,10 @@ function mostrarResultado(r, g){
     if(tRuedaTxt) f4body+=`<div class="row"><span class="rl">Tiempo</span><span class="rv">${tagGral(tRuedaTxt)}</span></div>`;
     if(pvdTxt)    f4body+=`<div class="row"><span class="rl">Proyección y dominio</span><span class="rv">${tagGral(pvdTxt)}</span></div>`;
     if(senasTxt)  f4body+=`<div class="row"><span class="rl">Señas</span><span class="rv">${tagGral(senasTxt)}</span></div>`;
-    if(guia)      f4body+=`<div class="row" style="flex-direction:column;gap:.35rem;"><span class="rl">Pasos como guía</span><div class="badges">${guia.split(",").map(p=>`<span class="badge badge-malo">${p.trim()}</span>`).join("")}</div></div>`;
-    if(parti)     f4body+=`<div class="row" style="flex-direction:column;gap:.35rem;"><span class="rl">Pasos como participante</span><div class="badges">${parti.split(",").map(p=>`<span class="badge badge-malo">${p.trim()}</span>`).join("")}</div></div>`;
-    if(!guia && !parti) f4body+=`<div class="row"><span class="rl" style="color:rgba(250,243,224,.8);font-style:italic;">✨ Sin errores graves considerables</span></div>`;
+    if(guia)          f4body+=`<div class="row" style="flex-direction:column;gap:.35rem;"><span class="rl">Pasos como guía</span><div class="badges">${guia.split(",").map(p=>`<span class="badge badge-malo">${p.trim()}</span>`).join("")}</div></div>`;
+    else if(guiaEsCero) f4body+=`<div class="row"><span class="rl">Pasos como guía</span><span class="rv"><span style="color:rgba(250,243,224,.7);font-style:italic;">✨ Sin errores graves considerables</span></span></div>`;
+    if(parti)           f4body+=`<div class="row" style="flex-direction:column;gap:.35rem;"><span class="rl">Pasos como participante</span><div class="badges">${parti.split(",").map(p=>`<span class="badge badge-malo">${p.trim()}</span>`).join("")}</div></div>`;
+    else if(partiEsCero) f4body+=`<div class="row"><span class="rl">Pasos como participante</span><span class="rv"><span style="color:rgba(250,243,224,.7);font-style:italic;">✨ Sin errores graves considerables</span></span></div>`;
 
     html += `<div class="fase">
       <div class="fase-head">
