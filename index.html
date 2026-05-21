@@ -527,8 +527,8 @@ function mostrarResultado(r, g){
   const tRuedaTxt = v(r,"tiempo_rueda");
   const pvdTxt    = v(r,"pv_d_rueda");
   const senasTxt  = v(r,"senas_rueda");
-  const guia      = v(r,"guia_rueda");
-  const parti     = v(r,"participante_rueda");
+  const guia      = v(r,"guia_rueda").replace(/^[0.,\s]*$/,"").trim();
+  const parti     = v(r,"participante_rueda").replace(/^[0.,\s]*$/,"").trim();
 
   // Totales
   const totGral  = n(r,"total_general");
@@ -571,7 +571,7 @@ function mostrarResultado(r, g){
     </div>`;
   } else {
     f1body += `<div class="row"><span class="rl">Pasos regulares</span>
-      <span class="rv"><span class="tag t-bien">Ninguno</span></span></div>`;
+      <span class="rv"><span style="color:rgba(250,243,224,.7);font-style:italic;">✨ Sin errores graves considerables</span></span></div>`;
   }
 
   // Pasos malos
@@ -586,7 +586,7 @@ function mostrarResultado(r, g){
     </div>`;
   } else {
     f1body += `<div class="row"><span class="rl">Pasos malos</span>
-      <span class="rv"><span class="tag t-bien">Ninguno</span></span></div>`;
+      <span class="rv"><span style="color:rgba(250,243,224,.7);font-style:italic;">✨ Sin errores graves considerables</span></span></div>`;
   }
 
   // Sin errores graves considerables
