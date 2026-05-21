@@ -505,9 +505,9 @@ function mostrarResultado(r, g){
 
   // Fase 1
   const errT   = n(r,"tiempo");
-  const pReg   = v(r,"pasos_regulares");
+  const pReg   = v(r,"pasos_regulares").replace(/^0+$/,"").trim();
   const totReg = n(r,"total_regulares");
-  const pMal   = v(r,"pasos_malos");
+  const pMal   = v(r,"pasos_malos").replace(/^0+$/,"").trim();
   const totMal = n(r,"total_malos");
   const totF1  = n(r,"total_fase_1");
 
