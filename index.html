@@ -364,11 +364,6 @@ const CFG = {
       // 3. Formato: CSV  →  Publicar
       // 4. Copia el enlace y pégalo aquí
       sheet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTb0dYDcEEZkil1P1hT67O3U-yWHhrA-Mp9BuwxVLqOGpyVDQpxq0FxNyNod61V9gt2zTAoHdTCqWKo/pub?gid=1413267086&single=true&output=csv"
-    }, 
-    { id: "plata_7",
-      nombre: "Plata 7",
-     codigo: "plata7",
-     sheet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTb0dYDcEEZkil1P1hT67O3U-yWHhrA-Mp9BuwxVLqOGpyVDQpxq0FxNyNod61V9gt2zTAoHdTCqWKo/pub?gid=445937808&single=true&output=csv"   
     },
     // Agrega más grupos así:
     // { id:"intermedio_1", nombre:"Intermedio 1", codigo:"int2026", sheet:"URL_CSV" },
@@ -516,10 +511,13 @@ function mostrarResultado(r, g){
   const totMal = n(r,"total_malos");
   const totF1  = n(r,"total_fase_1");
 
-  // Fase 2
+  // Fase 2 — cada canción: 1=bien, 0.5=regular, 0=mal
   const c1=n(r,"cancion_1"), c2=n(r,"cancion_2"), c3=n(r,"cancion_3");
-  const buenas=c1+c2+c3;
-  const malas=3-buenas;
+  const totalMusical = c1+c2+c3;
+  function tagCancion(val){
+    if(val>0) return '<span class="tag t-bien">Bien</span>';
+    return '<span class="tag t-mal">Mal</span>';
+  }
 
   // Fase 3
   const plibres = n(r,"pasos_libres");
@@ -538,6 +536,10 @@ function mostrarResultado(r, g){
   const parti     = partiRaw.replace(/^[0.,\s]*$/,"").trim();
   const guiaEsCero  = /^[0.,\s]+$/.test(guiaRaw) && guiaRaw !== "";
   const partiEsCero = /^[0.,\s]+$/.test(partiRaw) && partiRaw !== "";
+
+  // Coreografía (fase independiente)
+  const coreografia = n(r,"coreografia");
+  const tieneCoreografia = v(r,"coreografia").trim() !== "";
 
   // Totales
   const totGral  = n(r,"total_general");
@@ -609,20 +611,16 @@ function mostrarResultado(r, g){
   </div>`;
 
   // ─ FASE 2 ─
-  let f2body = `<div class="row"><span class="rl">Canciones buenas</span>
-    <span class="rv">${buenas} de 3 <span class="tag t-bien">+${buenas} pts</span></span></div>`;
-  if(malas>0){
-    f2body += `<div class="row"><span class="rl">Canciones malas</span>
-      <span class="rv">${malas} de 3 <span class="tag t-mal">−${malas} pts</span></span></div>`;
-  } else {
-    f2body += `<div class="row"><span class="rl">Canciones malas</span>
-      <span class="rv"><span class="tag t-bien">Ninguna ✓</span></span></div>`;
-  }
+  let f2body = `<div class="row"><span class="rl">1era canción</span><span class="rv">${tagCancion(c1)}</span></div>`;
+  f2body += `<div class="row"><span class="rl">2da canción</span><span class="rv">${tagCancion(c2)}</span></div>`;
+  f2body += `<div class="row"><span class="rl">3era canción</span><span class="rv">${tagCancion(c3)}</span></div>`;
+
+  const totalMusicalFmt = Number.isInteger(totalMusical) ? totalMusical.toString() : parseFloat(totalMusical.toFixed(2)).toString();
 
   html += `<div class="fase">
     <div class="fase-head">
       <h3>🎵 Fase Musical</h3>
-      <span class="fase-score">${buenas} / 3 puntos</span>
+      <span class="fase-score">${totalMusicalFmt} / 3 puntos</span>
     </div>
     <div class="fase-body">${f2body}</div>
   </div>`;
@@ -663,6 +661,17 @@ function mostrarResultado(r, g){
     </div>`;
   }
 
+  // ─ FASE COREOGRAFÍA ─
+  if(tieneCoreografia){
+    const coreoFmt = Number.isInteger(coreografia) ? coreografia.toString() : parseFloat(coreografia.toFixed(2)).toString();
+    html += `<div class="fase">
+      <div class="fase-head">
+        <h3>🎭 Coreografía</h3>
+        <span class="fase-score">${coreoFmt} puntos</span>
+      </div>
+    </div>`;
+  }
+
   // ─ ASISTENCIA ─
   if(asistencia>0){
     html += `<div class="fase">
@@ -677,9 +686,10 @@ function mostrarResultado(r, g){
   function fmt(num){ return Number.isInteger(num) ? num.toString() : parseFloat(num.toFixed(2)).toString(); }
   let resumenRows = "";
   resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Individual</span><span class="res-pts">${fmt(totF1)} puntos</span></div>`;
-  resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Musical</span><span class="res-pts">${fmt(buenas)} puntos</span></div>`;
+  resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Musical</span><span class="res-pts">${fmt(totalMusical)} puntos</span></div>`;
   if(f3body) resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Social</span><span class="res-pts">${fmt(f3total)} puntos</span></div>`;
   if(tRueda>0) resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Grupal – Rueda</span><span class="res-pts">${fmt(tRueda)} puntos</span></div>`;
+  if(tieneCoreografia) resumenRows += `<div class="resumen-row"><span class="res-fase">Coreografía</span><span class="res-pts">${fmt(coreografia)} puntos</span></div>`;
   if(asistencia>0) resumenRows += `<div class="resumen-row"><span class="res-fase">Asistencia y Puntualidad</span><span class="res-pts">${fmt(asistencia)} puntos</span></div>`;
 
   html += `<div class="resumen-box">
