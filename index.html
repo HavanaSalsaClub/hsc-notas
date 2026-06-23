@@ -663,15 +663,9 @@ function mostrarResultado(r, g){
 
   // ─ FASE 3 — solo mostrar los que son > 0 ─
   let f3body = ""; let f3total=0; let f3max=0;
-    // Tiempo
-  if(tiempo_social>0){
-    f1body += `<div class="row"><span class="rl">Errores de tiempo</span>
-      <span class="rv">${tiempo_social} error${errT>1?"es":""} ${tagTiempo(errT)}</span></div>`;
-  } else {
-    f1body += `<div class="row"><span class="rl">Tiempo</span>
-      <span class="rv">${tagTiempo(0)}</span></div>`;
-    
   if(social>0)   { f3body+=`<div class="row"><span class="rl">Social</span><span class="rv">${social} pts</span></div>`; f3total+=social; f3max+=social; }
+  if(plibres>0)  { f3body+=`<div class="row"><span class="rl">Pasos libres</span><span class="rv">${plibres} pts</span></div>`; f3total+=plibres; }
+  if(secu>0)     { f3body+=`<div class="row"><span class="rl">Secuencia</span><span class="rv">${secu} pts</span></div>`; f3total+=secu; }
 
   if(f3body){
     html += `<div class="fase">
@@ -722,8 +716,6 @@ function mostrarResultado(r, g){
         <span class="fase-score">${coreoFmt} puntos</span>
       </div>
     </div>`;
-    if(secu>0)     { f3body+=`<div class="row"><span class="rl">Secuencia</span><span class="rv">${secu} pts</span></div>`; f3total+=secu; }
-
   }
   
   // ─ CUADRO RESUMEN ─
@@ -733,7 +725,7 @@ function mostrarResultado(r, g){
   resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Musical</span><span class="res-pts">${fmt(totalMusical)} puntos</span></div>`;
   if(f3body) resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Social</span><span class="res-pts">${fmt(f3total)} puntos</span></div>`;
   if(tRueda>0) resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Grupal – Rueda</span><span class="res-pts">${fmt(tRueda)} puntos</span></div>`;
-  if(tieneCoreografia) resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Coreografica</span><span class="res-pts">${fmt(coreografia)} puntos</span></div>`;
+  if(tieneCoreografia) resumenRows += `<div class="resumen-row"><span class="res-fase">Coreografía</span><span class="res-pts">${fmt(coreografia)} puntos</span></div>`;
   if(asistencia>0) resumenRows += `<div class="resumen-row"><span class="res-fase">Asistencia y Puntualidad</span><span class="res-pts">${fmt(asistencia)} puntos</span></div>`;
   if(prueba_acumulativa>0) resumenRows += `<div class="resumen-row"><span class="res-fase">Prueba acumulativa</span><span class="res-pts">${fmt(prueba_acumulativa)} puntos</span></div>`;
   html += `<div class="resumen-box">
