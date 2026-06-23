@@ -663,6 +663,14 @@ function mostrarResultado(r, g){
 
   // ─ FASE 3 — solo mostrar los que son > 0 ─
   let f3body = ""; let f3total=0; let f3max=0;
+    // Tiempo
+  if(tiempo_social>0){
+    f1body += `<div class="row"><span class="rl">Errores de tiempo</span>
+      <span class="rv">${tiempo_social} error${errT>1?"es":""} ${tagTiempo(errT)}</span></div>`;
+  } else {
+    f1body += `<div class="row"><span class="rl">Tiempo</span>
+      <span class="rv">${tagTiempo(0)}</span></div>`;
+    
   if(social>0)   { f3body+=`<div class="row"><span class="rl">Social</span><span class="rv">${social} pts</span></div>`; f3total+=social; f3max+=social; }
 
   if(f3body){
