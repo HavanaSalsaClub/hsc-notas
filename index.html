@@ -691,11 +691,11 @@ function mostrarResultado(r, g){
   }
   // - FASE BACHATA TRADICIONAL - 
   if(pasos_libres>0){
-    const coreoFmt = Number.isInteger(pasos_libres) ? pasos_libres.toString() : parseFloat(pasos_libres.toFixed(2)).toString();
+    const coreoFmt = Number.isInteger(plibres) ? plibres.toString() : parseFloat(plibres.toFixed(2)).toString();
     html += `<div class="fase">
       <div class="fase-head">
         <h3>Fase Bachata Tradicional</h3>
-        <span class="fase-score">${pasos_libresFmt} puntos</span>
+        <span class="fase-score">${coreoFmt} puntos</span>
       </div>
     </div>`;
   }
