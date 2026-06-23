@@ -559,7 +559,11 @@ function mostrarResultado(r, g){
   // Coreografía (fase independiente)
   const coreografia = n(r,"coreografia");
   const tieneCoreografia = v(r,"coreografia").trim() !== "";
-
+  
+  // Prueba Acumulativa (fase independiente)
+  const prueba_acumulativa = n(r,"prueba_acumulativa");
+  const tieneprueba_acumulativa = v(r,"prueba_acumulativa").trim() !== "";
+  
   // Totales
   const totGral  = n(r,"total_general");
   const asistencia= n(r,"asistencia");
@@ -706,7 +710,15 @@ function mostrarResultado(r, g){
       </div>
     </div>`;
   }
-
+  // ─ PRUEBA ACUMULATIVA ─
+  if(prueba_acumulativa>0){
+    html += `<div class="fase">
+      <div class="fase-head">
+        <h3>Prueba Acumulativa</h3>
+        <span class="fase-score">${prueba_acumulativa} puntos</span>
+     </div>
+    </div>`;
+  }
   // ─ CUADRO RESUMEN ─
   function fmt(num){ return Number.isInteger(num) ? num.toString() : parseFloat(num.toFixed(2)).toString(); }
   let resumenRows = "";
