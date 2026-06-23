@@ -696,6 +696,26 @@ function mostrarResultado(r, g){
       </div>
     </div>`;
   }
+  
+  // ─ ASISTENCIA ─
+  if(asistencia>0){
+    html += `<div class="fase">
+      <div class="fase-head">
+        <h3>📅 Asistencia y Puntualidad</h3>
+        <span class="fase-score">${asistencia} puntos</span>
+      </div>
+    </div>`;
+  }
+  
+// ─ PRUEBA ACUMULATIVA ─
+  if(prueba_acumulativa>0){
+    html += `<div class="fase">
+      <div class="fase-head">
+        <h3>Prueba Acumulativa</h3>
+        <span class="fase-score">${prueba_acumulativa} puntos</span>
+     </div>
+    </div>`;
+  }
 
   // ─ CUADRO RESUMEN ─
   function fmt(num){ return Number.isInteger(num) ? num.toString() : parseFloat(num.toFixed(2)).toString(); }
