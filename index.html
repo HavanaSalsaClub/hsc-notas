@@ -689,8 +689,18 @@ function mostrarResultado(r, g){
       <div class="fase-body">${f4body}</div>
     </div>`;
   }
-
-  // ─ FASE COREOGRAFÍA ─
+  // - FASE BACHATA TRADICIONAL - 
+  if(plibres>0){
+    const coreoFmt = Number.isInteger(plibres) ? plibres.toString() : parseFloat(plibres.toFixed(2)).toString();
+    html += `<div class="fase">
+      <div class="fase-head">
+        <h3>Fase Bachata Tradicional</h3>
+        <span class="fase-score">${plibresFmt} puntos</span>
+      </div>
+    </div>`;
+  }
+  
+  // ─ FASE COREOGRAFICA ─
   if(tieneCoreografia){
     const coreoFmt = Number.isInteger(coreografia) ? coreografia.toString() : parseFloat(coreografia.toFixed(2)).toString();
     html += `<div class="fase">
