@@ -556,7 +556,11 @@ function mostrarResultado(r, g){
   const guiaEsCero  = /^[0.,\s]+$/.test(guiaRaw) && guiaRaw !== "";
   const partiEsCero = /^[0.,\s]+$/.test(partiRaw) && partiRaw !== "";
 
-  // Coreografía (fase independiente)
+  // Fase bachata tradicional (fase independiente)
+  const pasos_libres = n(r,"pasos_libres");
+  const tienepasos_libres = v(r,"pasos_libres").trim() !== "";
+  
+  // Fase coreografica (fase independiente)
   const coreografia = n(r,"coreografia");
   const tieneCoreografia = v(r,"coreografia").trim() !== "";
   
