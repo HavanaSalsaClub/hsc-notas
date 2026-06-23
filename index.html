@@ -517,7 +517,7 @@ function mostrarResultado(r, g){
   const totMal = n(r,"total_malos");
   const totF1  = n(r,"total_fase_1");
 
-  // Fase 2 — cada canción: 1=bien, 0.5=regular, 0=mal
+  // Fase 2 — cada canción: 1=bien, 0.5=bien, 0=mal
   const c1=n(r,"cancion_1"), c2=n(r,"cancion_2"), c3=n(r,"cancion_3");
   const totalMusical = c1+c2+c3;
   function tagCancion(val){
@@ -626,7 +626,7 @@ function mostrarResultado(r, g){
   html += `<div class="fase">
     <div class="fase-head">
       <h3>🎵 Fase Musical</h3>
-      <span class="fase-score">${totalMusicalFmt} / 3 puntos</span>
+      <span class="fase-score">${totalMusicalFmt} puntos</span>
     </div>
     <div class="fase-body">${f2body}</div>
   </div>`;
