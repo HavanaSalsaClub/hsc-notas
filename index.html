@@ -728,7 +728,7 @@ function mostrarResultado(r, g){
   if(tRueda>0) resumenRows += `<div class="resumen-row"><span class="res-fase">Fase Grupal – Rueda</span><span class="res-pts">${fmt(tRueda)} puntos</span></div>`;
   if(tieneCoreografia) resumenRows += `<div class="resumen-row"><span class="res-fase">Coreografía</span><span class="res-pts">${fmt(coreografia)} puntos</span></div>`;
   if(asistencia>0) resumenRows += `<div class="resumen-row"><span class="res-fase">Asistencia y Puntualidad</span><span class="res-pts">${fmt(asistencia)} puntos</span></div>`;
-
+  if(prueba_acumulativa>0) resumenRows += `<div class="resumen-row"><span class="res-fase">Prueba acumulativa</span><span class="res-pts">${fmt(prueba_acumulativa)} puntos</span></div>`;
   html += `<div class="resumen-box">
     <div class="resumen-title">📊 Resumen de Puntuación</div>
     ${resumenRows}
