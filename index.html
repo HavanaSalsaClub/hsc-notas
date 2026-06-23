@@ -540,10 +540,11 @@ function mostrarResultado(r, g){
 
   // Fase 3
   const plibres = n(r,"pasos_libres");
-  const secu    = n(r,"secuencia");
   const social  = n(r,"social");
   const totInd  = n(r,"total_individual");
-
+  const tiempo_social = n(r,"tiempo_social");
+  const fase_social = n(r,"fase_social");
+  
   // Fase 4
   const tRueda    = n(r,"total_rueda");
   const tRuedaTxt = v(r,"tiempo_rueda");
@@ -563,6 +564,8 @@ function mostrarResultado(r, g){
   // Fase coreografica (fase independiente)
   const coreografia = n(r,"coreografia");
   const tieneCoreografia = v(r,"coreografia").trim() !== "";
+  const secu    = n(r,"secuencia");
+  const tienesecuencia = v(r,"secuencia").trim() !== "";
   
   // Prueba Acumulativa (fase independiente)
   const prueba_acumulativa = n(r,"prueba_acumulativa");
